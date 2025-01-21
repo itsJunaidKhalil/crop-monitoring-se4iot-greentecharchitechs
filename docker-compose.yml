@@ -1,0 +1,92 @@
+services:
+  node-red:
+    container_name: crop-monitoring-node-red
+    build:
+      context: ./nodered-custom/
+      dockerfile: Dockerfile
+    image: custom_nodered:latest
+    environment:
+      - TZ=Europe/Amsterdam
+      - MYSQLUSERNAME=root
+      - MYSQLPASSWORD=example
+    ports:
+      - "1880:1880"
+    networks:
+      crop-monitoring-network:
+        ipv4_address: 172.35.0.100
+    volumes:
+      - ./nodered-custom/data:/data
+
+
+  mosquitto:
+    container_name: crop-monitoring-mosquitto
+    image: eclipse-mosquitto
+    volumes:
+    - ./mosquitto/config:/mosquitto/config
+    - ./mosquitto/log:/mosquitto/log
+    - ./mosquitto/data/:/mosquitto/data
+    networks:
+      crop-monitoring-network:
+        ipv4_address: 172.35.0.101
+    ports:
+    - "1883:1883" 
+
+
+  influxdb:
+    container_name: crop-monitoring-influxdb
+    image: influxdb:2.7.4
+    ports:
+      - 8086:8086
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb2
+      - ./influxdb/config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin1234!
+      - DOCKER_INFLUXDB_INIT_ORG=univaq
+      - DOCKER_INFLUXDB_INIT_BUCKET=se4iot
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=Ga8nVsXP4FAe5_M1a5j7uCa4zO_u_M9oUsO8wUSWh_wPbR3clc9ZTv420Li9adOVCPl1tGvn6hLHfI5gP7Lm5A==
+    networks:
+      crop-monitoring-network:
+        ipv4_address: 172.35.0.104
+  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: crop-monitoring-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/var:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - influxdb
+    networks:
+      crop-monitoring-network:
+        ipv4_address: 172.35.0.105
+  
+  telegraf:
+    image: telegraf
+    container_name: crop-monitoring-telegraf
+    volumes:
+    - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+      - mosquitto
+    links:
+      - influxdb
+    ports:
+      - '8125:8125'    
+    networks:
+      crop-monitoring-network:
+        ipv4_address: 172.35.0.102
+
+networks:
+  crop-monitoring-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.35.0.0/16
