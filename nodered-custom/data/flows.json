@@ -106,26 +106,6 @@
         "rejectUnauthorized": true
     },
     {
-        "id": "8516d67016050e5d",
-        "type": "telegram client config",
-        "botname": "@crop_alert_bot",
-        "verboselogging": false,
-        "loginmode": "bot",
-        "useproxy": false,
-        "usewss": false,
-        "devicemodel": "",
-        "systemversion": "",
-        "appversion": "",
-        "host": "",
-        "sockstype": "5",
-        "port": "6667",
-        "username": "anonymous",
-        "password": "",
-        "secret": "",
-        "mtproxy": false,
-        "timeout": "2"
-    },
-    {
         "id": "36205cab2c343fde",
         "type": "telegram bot",
         "botname": "crop-monitoring-alerts",
