@@ -9,7 +9,7 @@
     {
         "id": "ea24d4b37f03776f",
         "type": "tab",
-        "label": "Flow 2",
+        "label": "Field 1",
         "disabled": false,
         "info": "",
         "env": []
@@ -104,6 +104,52 @@
         "url": "http://host.docker.internal:8086",
         "timeout": 10,
         "rejectUnauthorized": true
+    },
+    {
+        "id": "8516d67016050e5d",
+        "type": "telegram client config",
+        "botname": "@crop_alert_bot",
+        "verboselogging": false,
+        "loginmode": "bot",
+        "useproxy": false,
+        "usewss": false,
+        "devicemodel": "",
+        "systemversion": "",
+        "appversion": "",
+        "host": "",
+        "sockstype": "5",
+        "port": "6667",
+        "username": "anonymous",
+        "password": "",
+        "secret": "",
+        "mtproxy": false,
+        "timeout": "2"
+    },
+    {
+        "id": "36205cab2c343fde",
+        "type": "telegram bot",
+        "botname": "crop-monitoring-alerts",
+        "usernames": "",
+        "chatids": "-1002413095727",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
     },
     {
         "id": "3cc11d24.ff01a2",
@@ -270,12 +316,13 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 470,
-        "y": 180,
+        "x": 390,
+        "y": 160,
         "wires": [
             [
                 "2687264c716070c7",
-                "88bcee632d429c06"
+                "88bcee632d429c06",
+                "50bce2b864c82ccf"
             ]
         ]
     },
@@ -331,7 +378,7 @@
         "type": "function",
         "z": "ea24d4b37f03776f",
         "name": "soil_moisture",
-        "func": "msg.topic = \"/crop/field1/soil_moisture\";\nmsg.payload = {\n    value: Math.floor(Math.random() * (70 - 30 + 1)) + 30, // Generate random moisture %\n    timestamp: new Date().toISOString()\n};\nreturn msg;\n",
+        "func": "msg.topic = \"/crop/field1/soil_moisture\";\nmsg.payload = {\n    sensor: \"Soil-\" + Math.floor(Math.random() * (100 - 1 + 1) + 1),\n    location: \"s\"+ Math.floor(Math.random() * (3 - 1 + 1) + 1),\n    value: Math.floor(Math.random() * (70 - 10 + 1)) + 10, // Generate random moisture %\n    timestamp: new Date().toISOString()\n};\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -355,11 +402,12 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "payload",
+        "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 820,
-        "y": 180,
+        "x": 740,
+        "y": 160,
         "wires": []
     },
     {
@@ -367,15 +415,15 @@
         "type": "function",
         "z": "ea24d4b37f03776f",
         "name": "soil_moisture",
-        "func": "\nlet data = msg.payload; // Sensor value (e.g., 45)\nlet test = [{\n    measurement: \"soil_moisture\", // Name of the measurement\n    fields: {\n        value: data.value // Data fields (e.g., sensor value)\n    },\n    tags: {\n        location: \"Field 1\" // Optional metadata\n    },\n    timestamp: new Date().getTime() // Optional timestamp\n}];\n\nmsg.payload = test;\nreturn msg;\n\n\n",
+        "func": "\nlet data = msg.payload; // Sensor value (e.g., 45)\nlet test = [{\n    measurement: \"soil_moisture\", // Name of the measurement\n    fields: {\n        value: data.value // Data fields (e.g., sensor value)\n    },\n    tags: {\n        location: data.location // Optional metadata\n    },\n    timestamp: new Date().getTime() // Optional timestamp\n}];\n\nmsg.payload = test;\nreturn msg;\n\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 730,
-        "y": 260,
+        "x": 650,
+        "y": 220,
         "wires": [
             [
                 "34872509727536f4"
@@ -395,12 +443,13 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 640,
-        "y": 460,
+        "x": 320,
+        "y": 480,
         "wires": [
             [
-                "e37a5344816139e8",
-                "2359c6061773e604"
+                "2359c6061773e604",
+                "8ab1e09e38f2d27b",
+                "e37a5344816139e8"
             ]
         ]
     },
@@ -456,7 +505,7 @@
         "type": "function",
         "z": "ea24d4b37f03776f",
         "name": "temperature",
-        "func": "msg.topic = \"/crop/field1/temperature\";\nmsg.payload = {\n    value: Math.floor(Math.random() * (40 - 15 + 1)) + 15, // Random temperature in Celsius\n    timestamp: new Date().toISOString()\n};\nreturn msg;\n",
+        "func": "msg.topic = \"/crop/field1/temperature\";\nmsg.payload = {\n    value: Math.floor(Math.random() * (40 - 15 + 1)) + 15, // Random temperature in Celsius\n    timestamp: new Date().toISOString(),\n    sensor: \"Temperature-\" + Math.floor(Math.random() * (100 - 1 + 1) + 1),\n    location: \"s\" + Math.floor(Math.random() * (3 - 1 + 1) + 1),\n};\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -483,8 +532,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 980,
-        "y": 400,
+        "x": 640,
+        "y": 460,
         "wires": []
     },
     {
@@ -492,15 +541,15 @@
         "type": "function",
         "z": "ea24d4b37f03776f",
         "name": "temperature",
-        "func": "\nlet data = msg.payload; // Sensor value (e.g., 45)\nlet test = [{\n    measurement: \"temperature\", // Name of the measurement\n    fields: {\n        value: data.value // Data fields (e.g., sensor value)\n    },\n    tags: {\n        location: \"Field 1\" // Optional metadata\n    },\n    timestamp: new Date().getTime() // Optional timestamp\n}];\n\nmsg.payload = test;\nreturn msg;",
+        "func": "\nlet data = msg.payload; // Sensor value (e.g., 45)\nlet test = [{\n    measurement: \"temperature\", // Name of the measurement\n    fields: {\n        value: data.value // Data fields (e.g., sensor value)\n    },\n    tags: {\n        location: data.field\n    },\n    timestamp: new Date().getTime() // Optional timestamp\n}];\n\nmsg.payload = test;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 970,
-        "y": 500,
+        "x": 650,
+        "y": 520,
         "wires": [
             [
                 "d62057bebed66227"
@@ -520,8 +569,8 @@
         "retentionPolicyV18Flux": "",
         "org": "univaq",
         "bucket": "se4iot",
-        "x": 1030,
-        "y": 180,
+        "x": 870,
+        "y": 220,
         "wires": []
     },
     {
@@ -537,8 +586,8 @@
         "retentionPolicyV18Flux": "",
         "org": "univaq",
         "bucket": "se4iot",
-        "x": 1170,
-        "y": 500,
+        "x": 830,
+        "y": 520,
         "wires": []
     },
     {
@@ -554,12 +603,13 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 570,
-        "y": 740,
+        "x": 310,
+        "y": 760,
         "wires": [
             [
-                "cedd6838b7c5162a",
-                "dbdc36aa98e8226d"
+                "dbdc36aa98e8226d",
+                "cf1ab3e01c97bd7e",
+                "cedd6838b7c5162a"
             ]
         ]
     },
@@ -584,8 +634,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 450,
-        "y": 560,
+        "x": 310,
+        "y": 660,
         "wires": [
             [
                 "fa50dec862ffb88d"
@@ -606,7 +656,7 @@
         "correl": "",
         "expiry": "",
         "broker": "80401ace8313dd5d",
-        "x": 910,
+        "x": 770,
         "y": 660,
         "wires": []
     },
@@ -615,15 +665,15 @@
         "type": "function",
         "z": "ea24d4b37f03776f",
         "name": "humidity",
-        "func": "msg.topic = \"/crop/field1/humidity\";\nmsg.payload = {\n    value: Math.floor(Math.random() * (90 - 40 + 1)) + 40, // Random humidity in %\n    timestamp: new Date().toISOString()\n};\nreturn msg;\n\n",
+        "func": "msg.topic = \"/crop/field1/humidity\";\nmsg.payload = {\n    value: Math.floor(Math.random() * (100 - 10 + 1)) + 10, // Random humidity in %\n    timestamp: new Date().toISOString(),\n    sensor: \"Humidity-\" + Math.floor(Math.random() * (100 - 1 + 1) + 1),\n    location: \"s\" + Math.floor(Math.random() * (3 - 1 + 1) + 1),\n};\nreturn msg;\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 700,
-        "y": 640,
+        "x": 560,
+        "y": 660,
         "wires": [
             [
                 "1471ef73faf24e40"
@@ -642,8 +692,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 800,
-        "y": 740,
+        "x": 540,
+        "y": 760,
         "wires": []
     },
     {
@@ -658,8 +708,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 820,
-        "y": 800,
+        "x": 560,
+        "y": 820,
         "wires": [
             [
                 "84b56f4edd2f4fc4"
@@ -679,8 +729,76 @@
         "retentionPolicyV18Flux": "",
         "org": "univaq",
         "bucket": "se4iot",
-        "x": 990,
-        "y": 800,
+        "x": 730,
+        "y": 820,
         "wires": []
+    },
+    {
+        "id": "50bce2b864c82ccf",
+        "type": "function",
+        "z": "ea24d4b37f03776f",
+        "name": "Send alert",
+        "func": "let data = msg.payload;\nif (data.value < 20){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Soil moisture below safe levels\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\nif (data.value > 60){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Soil moisture above safe levels, risk of waterlogging\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "91bc9bff80e67022",
+        "type": "telegram sender",
+        "z": "ea24d4b37f03776f",
+        "name": "crop-monitoring-alerts",
+        "bot": "36205cab2c343fde",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1240,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8ab1e09e38f2d27b",
+        "type": "function",
+        "z": "ea24d4b37f03776f",
+        "name": "Send alert",
+        "func": "let data = msg.payload;\nif (data.value > 35){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Temperature above safe levels\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\n\nif (data.value < 10) {\n    let test = {\n        type: \"message\",\n        chatId: \"-1002413095727\",\n        content: \"Domain: Industrial IoT\\nSensor: \" + data.sensor + \"\\nLocation:\" + data.location + \"\\nCondition:Temperature below safe levels\\nValue:\" + data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cf1ab3e01c97bd7e",
+        "type": "function",
+        "z": "ea24d4b37f03776f",
+        "name": "Send alert",
+        "func": "let data = msg.payload;\nif (data.value < 40){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Humidity below safe levels\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\nif (data.value >85 ) {\n    let test = {\n        type: \"message\",\n        chatId: \"-1002413095727\",\n        content: \"Domain: Industrial IoT\\nSensor: \" + data.sensor + \"\\nLocation:\" + data.location + \"\\nCondition:Humidity above safe levels\\nValue:\" + data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 900,
+        "wires": [
+            []
+        ]
     }
 ]
