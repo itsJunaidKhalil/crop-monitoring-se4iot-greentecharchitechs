@@ -67,22 +67,6 @@ services:
     networks:
       crop-monitoring-network:
         ipv4_address: 172.35.0.105
-  
-  telegraf:
-    image: telegraf
-    container_name: crop-monitoring-telegraf
-    volumes:
-    - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    depends_on:
-      - influxdb
-      - mosquitto
-    links:
-      - influxdb
-    ports:
-      - '8125:8125'    
-    networks:
-      crop-monitoring-network:
-        ipv4_address: 172.35.0.102
 
 networks:
   crop-monitoring-network:

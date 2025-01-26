@@ -738,7 +738,7 @@
         "type": "function",
         "z": "ea24d4b37f03776f",
         "name": "Send alert",
-        "func": "let data = msg.payload;\nif (data.value < 20){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Soil moisture below safe levels\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\nif (data.value > 60){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Soil moisture above safe levels, risk of waterlogging\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\n\n",
+        "func": "let data = msg.payload;\nif (data.value < 20){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Soil moisture below safe levels. Risk of drought stress\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\nif (data.value > 60){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Soil moisture above safe levels.Risk of waterlogging\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -748,7 +748,9 @@
         "x": 670,
         "y": 300,
         "wires": [
-            []
+            [
+                "91bc9bff80e67022"
+            ]
         ]
     },
     {
@@ -770,7 +772,7 @@
         "type": "function",
         "z": "ea24d4b37f03776f",
         "name": "Send alert",
-        "func": "let data = msg.payload;\nif (data.value > 35){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n            content: \"Domain: Industrial IoT\\nSensor: \"+data.sensor+\"\\nLocation:\"+data.location+\"\\nCondition:Temperature above safe levels\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\n\nif (data.value < 10) {\n    let test = {\n        type: \"message\",\n        chatId: \"-1002413095727\",\n        content: \"Domain: Industrial IoT\\nSensor: \" + data.sensor + \"\\nLocation:\" + data.location + \"\\nCondition:Temperature below safe levels\\nValue:\" + data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}",
+        "func": "let data = msg.payload;\nif (data.value > 35){\n    let test = {\n            type: \"message\",\n            chatId: \"-1002413095727\",\n        content: \"Domain: Industrial IoT\\nSensor: \" + data.sensor + \"\\nLocation:\" + data.location +\"\\nCondition:Temperature above safe levels. Risk of heat stress\\nValue:\"+data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}\n\nif (data.value < 10) {\n    let test = {\n        type: \"message\",\n        chatId: \"-1002413095727\",\n        content: \"Domain: Industrial IoT\\nSensor: \" + data.sensor + \"\\nLocation:\" + data.location + \"\\nCondition:Temperature below safe levels. Risk of frost damage)\\nValue:\" + data.value\n    };\n\n    msg.payload = test;\n    return msg;\n}",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -780,7 +782,9 @@
         "x": 650,
         "y": 580,
         "wires": [
-            []
+            [
+                "91bc9bff80e67022"
+            ]
         ]
     },
     {
@@ -798,7 +802,9 @@
         "x": 610,
         "y": 900,
         "wires": [
-            []
+            [
+                "91bc9bff80e67022"
+            ]
         ]
     }
 ]
